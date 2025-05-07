@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>SQLi Vulnerable App - Accueil</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --bg-color: #ecf0f1;
+      --text-color: #2c3e50;
+      --success-color: #27ae60;
+      --warning-color: #f39c12;
+      --danger-color: #c0392b;
+    }
+    
+    body {
+      font-family: 'Consolas', monospace;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+    }
+    
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      font-weight: 700;
+      position: relative;
+    }
+    
+    h1::after {
+      content: " <SecureSQLi>";
+      font-size: 0.5em;
+      color: var(--accent-color);
+      vertical-align: super;
+    }
+    
+    .app-description {
+      text-align: center;
+      margin-bottom: 40px;
+      line-height: 1.6;
+      padding: 0 20px;
+    }
+    
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 25px;
+      margin-bottom: 40px;
+    }
+    
+    .feature-card {
+      background-color: rgba(52, 152, 219, 0.05);
+      padding: 25px;
+      border-radius: 6px;
+      border-left: 3px solid var(--secondary-color);
+      transition: transform 0.3s, box-shadow 0.3s;
+    }
+    
+    .feature-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+    
+    .feature-title {
+      margin-top: 0;
+      color: var(--secondary-color);
+      font-size: 1.2em;
+    }
+    
+    .cta-buttons {
+      display: flex;
+      justify-content: center;
+      gap: 15px;
+      margin-top: 30px;
+    }
+    
+    .btn {
+      display: inline-block;
+      padding: 12px 25px;
+      border-radius: 4px;
+      text-decoration: none;
+      font-weight: bold;
+      transition: all 0.3s;
+      text-align: center;
+    }
+    
+    .btn-primary {
+      background-color: var(--secondary-color);
+      color: white;
+    }
+    
+    .btn-primary:hover {
+      background-color: #2980b9;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .btn-outline {
+      border: 2px solid var(--primary-color);
+      color: var(--primary-color);
+    }
+    
+    .btn-outline:hover {
+      background-color: var(--primary-color);
+      color: white;
+      transform: translateY(-2px);
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+    
+    .footer {
+      text-align: center;
+      margin-top: 40px;
+      padding-top: 20px;
+      border-top: 1px solid #eee;
+      font-size: 0.9em;
+      color: #95a5a6;
+    }
+    
+    .code-decoration {
+      position: absolute;
+      opacity: 0.05;
+      font-size: 10px;
+      pointer-events: none;
+      z-index: 0;
+      font-family: 'Consolas', monospace;
+      color: var(--primary-color);
+    }
+    
+    .code-top-left {
+      top: 20px;
+      left: 20px;
+    }
+    
+    .code-bottom-right {
+      bottom: 20px;
+      right: 20px;
+    }
+    
+    .security-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 10px;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 5px 8px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+    }
+    
+    .security-status {
+      display: inline-block;
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      margin-right: 5px;
+      background-color: var(--danger-color);
+    }
+    
+    .warning-banner {
+      background-color: rgba(231, 76, 60, 0.1);
+      border-left: 4px solid var(--accent-color);
+      padding: 15px;
+      margin: 30px 0;
+      display: flex;
+      align-items: center;
+      border-radius: 4px;
+    }
+    
+    .warning-icon {
+      font-size: 20px;
+      margin-right: 15px;
+      color: var(--accent-color);
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="security-badge">
+      <span class="security-status"></span>
+      <span>SQLi Protection: OFF</span>
+    </div>
+    
+    <div class="code-decoration code-top-left">
+      SELECT * FROM users<br>
+      WHERE username = 'input'<br>
+      AND password = 'input'
+    </div>
+    <div class="code-decoration code-bottom-right">
+      username = 'admin' --<br>
+      1=1 OR '1'='1'<br>
+      DROP TABLE users;
+    </div>
+    
+    <h1>SQLi Vulnerable App</h1>
+    
+    <div class="app-description">
+      Application démonstrative des vulnérabilités d'injection SQL et de leurs protections.
+      Explorez, testez et apprenez comment les failles de sécurité peuvent être exploitées et mitigées.
+    </div>
+    
+    <div class="warning-banner">
+      <div class="warning-icon">⚠️</div>
+      <div>
+        <strong>Application intentionnellement vulnérable</strong> - Cette application contient des vulnérabilités SQL pour des fins éducatives uniquement. Ne l'utilisez pas en production.
+      </div>
+    </div>
+    
+    <div class="features">
+      <div class="feature-card">
+        <h3 class="feature-title">Vulnérabilités SQL</h3>
+        <p>Explorez des exemples pratiques d'injections SQL et comprenez comment les attaquants peuvent compromettre vos bases de données.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h3 class="feature-title">Protection ML</h3>
+        <p>Découvrez comment l'apprentissage automatique peut être utilisé pour détecter et prévenir les tentatives d'injection SQL.</p>
+      </div>
+      
+      <div class="feature-card">
+        <h3 class="feature-title">Bonnes Pratiques</h3>
+        <p>Apprenez les meilleures pratiques de sécurité pour protéger efficacement vos applications contre les injections SQL.</p>
+      </div>
+    </div>
+    
+    <div class="cta-buttons">
+      <a href="/login" class="btn btn-primary">Se Connecter</a>
+      <a href="/register" class="btn btn-outline">Créer un Compte</a>
+    </div>
+    
+    <div class="footer">
+      Projet éducatif sur la sécurité des applications web - v1.0.2
+    </div>
+  </div>
+</body>
+</html>

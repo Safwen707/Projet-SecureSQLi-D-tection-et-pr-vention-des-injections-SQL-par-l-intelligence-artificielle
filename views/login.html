@@ -1,0 +1,516 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Login - Protection SQLi</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --bg-color: #ecf0f1;
+      --text-color: #2c3e50;
+    }
+    
+    body {
+      font-family: 'Consolas', monospace;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 450px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+    }
+    
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      font-weight: 700;
+      position: relative;
+    }
+    
+    h1::after {
+      content: " <SecureSQLi>";
+      font-size: 0.5em;
+      color: var(--accent-color);
+      vertical-align: super;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+    
+    input {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Consolas', monospace;
+      transition: border 0.3s;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    input:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    button {
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      font-family: 'Consolas', monospace;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+    
+    .code-decoration {
+      position: absolute;
+      opacity: 0.05;
+      font-size: 10px;
+      pointer-events: none;
+      z-index: 0;
+      font-family: 'Consolas', monospace;
+      color: var(--primary-color);
+    }
+    
+    .code-top-left {
+      top: 20px;
+      left: 20px;
+    }
+    
+    .code-bottom-right {
+      bottom: 20px;
+      right: 20px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="code-decoration code-top-left">
+      SELECT * FROM users<br>
+      WHERE username = 'input'<br>
+      AND password = 'input'
+    </div>
+    <div class="code-decoration code-bottom-right">
+      username = 'admin' --<br>
+      1=1 OR '1'='1'<br>
+      DROP TABLE users;
+    </div>
+    <h1>Login</h1>
+    <form action="/login" method="POST">
+      <input type="text" name="username" placeholder="Username" required />
+      <input type="password" name="password" placeholder="Password" required />
+      <button type="submit">Connexion Sécurisée</button>
+    </form>
+  </div>
+</body>
+</html>
+<!-- <!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Secure Login - Protection SQLi</title>
+  <style>
+    :root {
+      --primary-color: #2c3e50;
+      --secondary-color: #3498db;
+      --accent-color: #e74c3c;
+      --bg-color: #ecf0f1;
+      --text-color: #2c3e50;
+      --success-color: #27ae60;
+      --warning-color: #f39c12;
+      --danger-color: #c0392b;
+    }
+    
+    body {
+      font-family: 'Consolas', monospace;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+    
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background-color: white;
+      border-radius: 8px;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .container::before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 5px;
+      background: linear-gradient(to right, var(--secondary-color), var(--accent-color));
+    }
+    
+    h1 {
+      text-align: center;
+      color: var(--primary-color);
+      margin-bottom: 30px;
+      font-weight: 700;
+      position: relative;
+    }
+    
+    h1::after {
+      content: " <SecureSQLi>";
+      font-size: 0.5em;
+      color: var(--accent-color);
+      vertical-align: super;
+    }
+    
+    form {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      position: relative;
+      z-index: 1;
+    }
+    
+    input {
+      padding: 12px 15px;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      font-family: 'Consolas', monospace;
+      transition: border 0.3s;
+      outline: none;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    
+    input:focus {
+      border-color: var(--secondary-color);
+      box-shadow: 0 0 0 2px rgba(52, 152, 219, 0.2);
+    }
+    
+    button {
+      background-color: var(--secondary-color);
+      color: white;
+      border: none;
+      padding: 12px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: background-color 0.3s;
+      font-family: 'Consolas', monospace;
+    }
+    
+    button:hover {
+      background-color: #2980b9;
+    }
+    
+    button:disabled {
+      background-color: #95a5a6;
+      cursor: not-allowed;
+    }
+    
+    .alert {
+      padding: 12px;
+      border-radius: 4px;
+      margin-top: 15px;
+      font-weight: bold;
+      text-align: center;
+      display: none;
+      animation: fadeIn 0.3s;
+    }
+    
+    #securityAlert {
+      background-color: var(--danger-color);
+      color: white;
+      border-left: 5px solid #962b1c;
+    }
+    
+    #connectionAlert {
+      background-color: var(--warning-color);
+      color: white;
+      border-left: 5px solid #d35400;
+    }
+    
+    #debugOutput {
+      margin-top: 25px;
+      padding: 15px;
+      background-color: #f7f9fa;
+      border: 1px solid #ddd;
+      border-radius: 4px;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 12px;
+    }
+    
+    #debugOutput div {
+      padding: 3px 0;
+      border-bottom: 1px dotted #eee;
+    }
+    
+    .code-decoration {
+      position: absolute;
+      opacity: 0.05;
+      font-size: 10px;
+      pointer-events: none;
+      z-index: 0;
+      font-family: 'Consolas', monospace;
+      color: var(--primary-color);
+    }
+    
+    .code-top-left {
+      top: 20px;
+      left: 20px;
+    }
+    
+    .code-bottom-right {
+      bottom: 20px;
+      right: 20px;
+    }
+    
+    .status-indicator {
+      display: inline-block;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      margin-right: 5px;
+    }
+    
+    .status-online {
+      background-color: var(--success-color);
+    }
+    
+    .status-offline {
+      background-color: var(--danger-color);
+    }
+    
+    .security-badge {
+      position: absolute;
+      top: 15px;
+      right: 15px;
+      font-size: 10px;
+      background-color: var(--primary-color);
+      color: white;
+      padding: 5px 8px;
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+    }
+    
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(-10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    
+    @keyframes scanning {
+      0% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0.4); }
+      70% { box-shadow: 0 0 0 5px rgba(231, 76, 60, 0); }
+      100% { box-shadow: 0 0 0 0 rgba(231, 76, 60, 0); }
+    }
+    
+    input:focus {
+      animation: scanning 1.5s infinite;
+    }
+  </style>
+  <script src="/api.js" type="module"></script>
+</head>
+<body>
+  <div class="container">
+    <div class="security-badge">
+      <span class="status-indicator status-offline" id="securityStatus"></span>
+      <span>Secure SQLi Protection</span>
+    </div>
+    
+    <div class="code-decoration code-top-left">
+      SELECT * FROM users<br>
+      WHERE username = 'input'<br>
+      AND password = 'input'
+    </div>
+    <div class="code-decoration code-bottom-right">
+      username = 'admin' --<br>
+      1=1 OR '1'='1'<br>
+      DROP TABLE users;
+    </div>
+    
+    <h1>Login</h1>
+    
+    <form id="loginForm" action="/login" method="POST">
+      <input type="text" name="username" id="username" placeholder="Username" required />
+      <input type="password" name="password" id="password" placeholder="Password" required />
+      <button type="submit" id="loginButton">Connexion Sécurisée</button>
+    </form>
+    
+    <div id="securityAlert" class="alert">
+      ⚠️ Tentative d'injection SQL détectée! La connexion a été bloquée pour des raisons de sécurité.
+    </div>
+    
+    <div id="connectionAlert" class="alert">
+      ⚠️ Impossible de vérifier la sécurité - le service de détection n'est pas disponible.
+    </div>
+    
+    <div id="debugOutput">
+      <div>Logs de débogage apparaîtront ici</div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { predictSQLi } from '/api.js';
+
+    // Fonction de log pour le débogage
+    function log(message) {
+      const debugOutput = document.getElementById('debugOutput');
+      const timestamp = new Date().toLocaleTimeString();
+      debugOutput.innerHTML += `<div>[${timestamp}] ${message}</div>`;
+      debugOutput.scrollTop = debugOutput.scrollHeight;
+      console.log(message);
+    }
+
+    // Vérifie si le serveur Flask est disponible au chargement de la page
+    async function checkServerStatus() {
+      try {
+        log("Vérification de la disponibilité du serveur de prédiction...");
+        
+        // Utilise la fonction fetch standard avec un timeout de 2 secondes
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 2000);
+        
+        const response = await fetch('http://localhost:5000/predict', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ query: 'SELECT 1' }),
+          signal: controller.signal
+        });
+        
+        clearTimeout(timeoutId);
+        
+        if (response.ok) {
+          log("✅ Serveur de prédiction disponible et fonctionnel");
+          document.getElementById('securityStatus').classList.remove('status-offline');
+          document.getElementById('securityStatus').classList.add('status-online');
+          return true;
+        } else {
+          log("❌ Le serveur de prédiction a répondu avec une erreur");
+          return false;
+        }
+      } catch (error) {
+        log(`❌ Serveur de prédiction non disponible: ${error.message}`);
+        document.getElementById('connectionAlert').style.display = 'block';
+        document.getElementById('connectionAlert').textContent = 
+          "⚠️ Le service de détection d'injection SQL n'est pas disponible. Vérifiez que le serveur Python (app.py) est en cours d'exécution.";
+        return false;
+      }
+    }
+
+    // Lorsque la page est chargée, vérifie le statut du serveur
+    document.addEventListener('DOMContentLoaded', function() {
+      log("Script de sécurité chargé ✅");
+      checkServerStatus();
+    });
+
+    document.getElementById('loginForm').addEventListener('submit', async function(event) {
+      // Empêcher l'envoi du formulaire par défaut
+      event.preventDefault();
+      
+      // Désactiver le bouton pour éviter les soumissions multiples
+      const loginButton = document.getElementById('loginButton');
+      loginButton.disabled = true;
+      loginButton.textContent = 'Vérification...';
+      
+      // Récupérer les valeurs du formulaire
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+      
+      // Construire la requête SQL telle qu'elle serait utilisée côté serveur
+      const sqlQuery = `SELECT * FROM users WHERE username = '${username}' AND password = '${password}'`;
+      
+      log(`Tentative de vérification pour la requête: ${sqlQuery}`);
+      
+      try {
+        // Appeler l'API de prédiction
+        log("Envoi de la requête à l'API de prédiction...");
+        const result = await predictSQLi(sqlQuery);
+        log(`Réponse reçue de l'API: ${JSON.stringify(result)}`);
+        
+        // Vérifier si la requête est considérée comme malveillante
+        if (result.prediction === 1 || (result.probabilities[1] > result.probabilities[0])) {
+          // Afficher l'alerte de sécurité
+          document.getElementById('securityAlert').style.display = 'block';
+          log(`⚠️ ALERTE: Injection SQL détectée avec probabilités: ${JSON.stringify(result.probabilities)}`);
+          
+          // Réactiver le bouton
+          loginButton.disabled = false;
+          loginButton.textContent = 'Connexion Sécurisée';
+        } else {
+          // Si tout semble sûr, soumettre le formulaire
+          log("Requête considérée comme sûre, soumission du formulaire...");
+          loginButton.textContent = 'Connexion...';
+          this.submit();
+        }
+      } catch (error) {
+        log(`❌ ERREUR: ${error.message}`);
+        
+        // Vérifier si c'est une erreur de connexion au serveur Flask
+        if (error.message.includes('connecter au serveur') || 
+            error.message.includes('Failed to fetch') ||
+            error.message.includes('NetworkError')) {
+          document.getElementById('connectionAlert').style.display = 'block';
+          document.getElementById('connectionAlert').textContent = 
+            `⚠️ ${error.message}`;
+        }
+        
+        // Afficher l'erreur pour débogage
+        document.getElementById('debugOutput').style.color = 'red';
+        
+        // Réactiver le bouton
+        loginButton.disabled = false;
+        loginButton.textContent = 'Connexion Sécurisée';
+      }
+    });
+  </script>
+</body>
+</html> -->

